@@ -20,3 +20,26 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer(new InfoContactTransformer());
 });
 ```
+
+### TypeTransformer
+
+Swashbuckle provides the [MapType method on the AddSwaggerGen] options to customize the
+`type` and `format` for a C# type.
+The [TypeTransformer](./TransformerGalleryTransformers/TypeTransformer.cs) that does more or less the same thing.
+
+[MapType method on the AddSwaggerGen]: https://github.com/domaindrivendev/Swashbuckle.AspNetCore?tab=readme-ov-file#override-schema-for-specific-types
+
+#### Usage
+
+Copy the TypeTransformer.cs file to your project and then configure the transformer in the `configureOptions`
+delegate of the `AddOpenApi` extension method as shown below:
+
+```csharp
+builder.Services.AddOpenApi(options =>
+{
+    TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = "number", Format = "decimal" });
+    options.AddSchemaTransformer(TypeTransformer.TransformAsync);
+});
+```
+
+This example maps the `decimal` type to the `number` type with the `decimal` format.

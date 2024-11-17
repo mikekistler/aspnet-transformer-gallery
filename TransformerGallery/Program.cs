@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer(new InfoContactTransformer());
+
+    TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = "number", Format = "decimal" });
+    options.AddSchemaTransformer(TypeTransformer.TransformAsync);
 });
 
 var app = builder.Build();
@@ -29,7 +34,8 @@ app.MapGet("/weatherforecast", () =>
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
+            summaries[Random.Shared.Next(summaries.Length)],
+            (decimal)Random.Shared.NextDouble()
         ))
         .ToArray();
     return forecast;
@@ -38,7 +44,7 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary, decimal chanceOfPrecip)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }

@@ -39,7 +39,8 @@
         "required": [
           "date",
           "temperatureC",
-          "summary"
+          "summary",
+          "chanceOfPrecip"
         ],
         "type": "object",
         "properties": {
@@ -54,6 +55,10 @@
           "summary": {
             "type": "string",
             "nullable": true
+          },
+          "chanceOfPrecip": {
+            "type": "number",
+            "format": "decimal"
           },
           "temperatureF": {
             "type": "integer",
