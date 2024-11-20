@@ -43,3 +43,22 @@ builder.Services.AddOpenApi(options =>
 ```
 
 This example maps the `decimal` type to the `number` type with the `decimal` format.
+
+### SecuritySchemeTransformer
+
+Currently ASP.NET does not collect information about the security schemes used in the application. The
+[SecuritySchemeTransformer](./TransformerGalleryTransformers/SecuritySchemeTransformer.cs) adds a JWT Bearer token
+security scheme to the OpenAPI document, and then adds this as the security requirement for all operations
+that require authorization.
+
+#### Usage
+
+Copy the SecuritySchemeTransformer.cs file to your project and then configure the transformer in the `configureOptions`
+delegate of the `AddOpenApi` extension method as shown below:
+
+```csharp
+builder.Services.AddOpenApi(options =>
+{
+    options.AddSecuritySchemeTransformer();
+});
+```

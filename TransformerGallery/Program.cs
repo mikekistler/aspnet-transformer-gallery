@@ -10,7 +10,10 @@ builder.Services.AddOpenApi(options =>
 
     TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = "number", Format = "decimal" });
     options.AddSchemaTransformer(TypeTransformer.TransformAsync);
+    options.AddSecuritySchemeTransformer();
 });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -19,6 +22,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
@@ -41,6 +46,13 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapPost("/snow-day", () =>
+{
+    return Results.Ok("No school today!");
+})
+.WithName("SnowDay")
+.RequireAuthorization();
 
 app.Run();
 
