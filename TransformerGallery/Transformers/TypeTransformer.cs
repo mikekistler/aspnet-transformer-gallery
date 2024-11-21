@@ -10,7 +10,7 @@ internal static class TypeTransformer
         transforms[typeof(T)] = schema;
     }
 
-    public static async Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context, CancellationToken cancellationToken)
+    public static Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context, CancellationToken cancellationToken)
     {
         // If transforms contains the schema's type, set the schema type and format from the transform schema
         if (transforms.ContainsKey(context.JsonTypeInfo.Type))
@@ -20,6 +20,6 @@ internal static class TypeTransformer
             schema.Format = transformedSchema.Format;
         }
 
-        return;
+        return Task.CompletedTask;
     }
 }
