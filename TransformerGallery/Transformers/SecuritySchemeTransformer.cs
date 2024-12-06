@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 public static class SecuritySchemeTransformer
 {
     // An extension method to add JWT Bearer security scheme/requirements to the OpenAPI document.
-    // We use an extention method since this transformation is implemented as two separate transformers,
+    // We use an extension method since this transformation is implemented as two separate transformers,
     // a document transformer to add the security scheme to the document's components, and an operation transformer
     // to add the security requirement to operations that have the [Authorize] attribute.
     public static OpenApiOptions AddSecuritySchemeTransformer(this OpenApiOptions options)

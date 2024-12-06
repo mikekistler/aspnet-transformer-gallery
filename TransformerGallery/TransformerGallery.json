@@ -49,10 +49,70 @@
           }
         ]
       }
+    },
+    "/nullable-props": {
+      "post": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          }
+        }
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "homeAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "workAddress": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
       "WeatherForecast": {
         "required": [
           "date",
