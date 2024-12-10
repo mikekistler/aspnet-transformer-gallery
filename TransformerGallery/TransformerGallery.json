@@ -100,6 +100,10 @@
         }
       },
       "Body": {
+        "required": [
+          "name",
+          "phoneNumber"
+        ],
         "type": "object",
         "properties": {
           "name": {
@@ -110,8 +114,27 @@
           },
           "workAddress": {
             "$ref": "#/components/schemas/Address"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "phoneType": {
+            "$ref": "#/components/schemas/PhoneType"
+          },
+          "altPhoneNumber": {
+            "type": "string"
+          },
+          "altPhoneType": {
+            "$ref": "#/components/schemas/PhoneType"
           }
         }
+      },
+      "PhoneType": {
+        "enum": [
+          "Home",
+          "Work",
+          "Mobile"
+        ]
       },
       "WeatherForecast": {
         "required": [

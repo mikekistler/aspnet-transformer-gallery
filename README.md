@@ -26,8 +26,11 @@ builder.Services.AddOpenApi(options =>
 ### NullableTransformer
 
 ASP.NET may generate two different schemas for a class or struct that may be nullable. In many cases the "nullability" of a property is already expressed in the schema by the omission of the property from the required keyword. Properties that are not required can be omitted from the body entirely and the Json deserializer will produce an object with a null value for that property. In this case, dropping the `nullable: true` keyword from the schema allows the same schema to be used for both nullable and non-nullable cases.
+In addition, the `null` value is removed from the enum values if present so that nullable and non-nullable enums can share the same schema,
 
 The [NullableTransformer](./TransformerGalleryTransformers/NullableTransformer.cs) transformer removes `nullable: true` from any properties that are not listed in the required keyword of the schema.
+
+Additional work must be done for nullable value types, because the default schema reference ID for nullable value types will have a prefix of "NullableOf", which will differ from the schema reference ID for the underlying value type, causing two schemas to be generated. To address this issue, a custom CreateSchemaReferenceId method is added to the OpenApiOptions to remove the prefix from the schema reference for nullable value types.
 
 #### Usage
 
@@ -37,7 +40,7 @@ delegate of the `AddOpenApi` extension method as shown below:
 ```csharp
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer<NullableTransformer>();
+    options.AddNullableTransformer();
 });
 ```
 

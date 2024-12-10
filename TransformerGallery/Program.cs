@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddOpenApi(options =>
 
     TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = "number", Format = "decimal" });
     options.AddSchemaTransformer(TypeTransformer.TransformAsync);
-    options.AddSchemaTransformer<NullableTransformer>();
+    options.AddNullableTransformer();
     options.AddSecuritySchemeTransformer();
 });
 
@@ -69,15 +70,34 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary, decimal
 
 public class Body
 {
+    public Body(string name, string phoneNumber)
+    {
+        Name = name;
+        PhoneNumber = phoneNumber;
+    }
+
     public string Name { get; set; }
     public Address HomeAddress { get; set; }
     public Address? WorkAddress { get; set; }
+    public string PhoneNumber { get; set; }
+    public PhoneType PhoneType { get; set; }
+    public string? AltPhoneNumber { get; set; }
+    public PhoneType? AltPhoneType { get; set; }
+
 }
 
-public class Address
+public struct Address
 {
     public string? Street { get; set; }
     public string? City { get; set; }
     public string? State { get; set; }
     public string? Zip { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum PhoneType
+{
+    Home,
+    Work,
+    Mobile
 }
