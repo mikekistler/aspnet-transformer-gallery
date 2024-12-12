@@ -40,6 +40,10 @@ public static class NullableTransformer
                     {
                         property.Value.Enum = property.Value.Enum.Where(e => (e as OpenApiString)!.Value != null).ToList();
                     }
+                    // And remove default value of null if set
+                    if (property.Value.Default is OpenApiNull) {
+                        property.Value.Default = null;
+                    }
                 }
             }
             return Task.CompletedTask;

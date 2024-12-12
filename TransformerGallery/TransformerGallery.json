@@ -78,6 +78,64 @@
           }
         }
       }
+    },
+    "/command": {
+      "post": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Command"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Command"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tag": {
+      "post": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -129,12 +187,49 @@
           }
         }
       },
+      "Command": {
+        "required": [
+          "name",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/ETagNamespace"
+          }
+        }
+      },
+      "ETagNamespace": {
+        "enum": [
+          "ContentWarning",
+          "Genre",
+          "Franchise"
+        ]
+      },
       "PhoneType": {
         "enum": [
           "Home",
           "Work",
           "Mobile"
         ]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/ETagNamespace"
+          }
+        }
       },
       "WeatherForecast": {
         "required": [

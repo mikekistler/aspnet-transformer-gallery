@@ -61,6 +61,16 @@ app.MapPost("/nullable-props", (Body body) =>
     return TypedResults.Ok(body);
 });
 
+app.MapPost("/command", (Command body) =>
+{
+    return TypedResults.Ok(body);
+});
+
+app.MapPost("/tag", (Tag body) =>
+{
+    return TypedResults.Ok(body);
+});
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary, decimal chanceOfPrecip)
@@ -70,20 +80,13 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary, decimal
 
 public class Body
 {
-    public Body(string name, string phoneNumber)
-    {
-        Name = name;
-        PhoneNumber = phoneNumber;
-    }
-
-    public string Name { get; set; }
+    required public string Name { get; set; }
     public Address HomeAddress { get; set; }
     public Address? WorkAddress { get; set; }
-    public string PhoneNumber { get; set; }
+    required public string PhoneNumber { get; set; }
     public PhoneType PhoneType { get; set; }
     public string? AltPhoneNumber { get; set; }
     public PhoneType? AltPhoneType { get; set; }
-
 }
 
 public struct Address
@@ -100,4 +103,20 @@ public enum PhoneType
     Home,
     Work,
     Mobile
+}
+
+public sealed record Command(string Name, string? Description, ETagNamespace? Namespace = null);
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ETagNamespace
+{
+	ContentWarning = 1,
+	Genre = 2,
+	Franchise = 3,
+}
+
+public sealed class Tag
+{
+	public string? Description { get; init; }
+	public ETagNamespace? Namespace { get; init; }
 }
