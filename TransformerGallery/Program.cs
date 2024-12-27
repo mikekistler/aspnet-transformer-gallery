@@ -1,4 +1,7 @@
+using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +16,24 @@ builder.Services.AddOpenApi(options =>
     options.AddSchemaTransformer(TypeTransformer.TransformAsync);
     options.AddNullableTransformer();
     options.AddSecuritySchemeTransformer();
+    options.AddProblemResponseTransformer();
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance =
+            $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+
+        Activity? activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+        context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
+    };
+});
 
 var app = builder.Build();
 
@@ -69,6 +87,29 @@ app.MapPost("/command", (Command body) =>
 app.MapPost("/tag", (Tag body) =>
 {
     return TypedResults.Ok(body);
+});
+
+app.MapGet("/problems",
+    Results<Ok<string>, ProblemHttpResult> (int status) =>
+{
+    switch (status)
+    {
+        case 404:
+            return TypedResults.Problem(new (){
+                Status = 404,
+                Detail = "Resource not found"
+            });
+        case 409:
+            return TypedResults.Problem(new (){
+                Status = 409,
+                Detail = "Conflict"
+            });
+        default:
+            return TypedResults.Problem(new (){
+                Status = 400,
+                Detail = "request is not valid"
+            });
+    }
 });
 
 app.Run();

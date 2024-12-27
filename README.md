@@ -44,6 +44,23 @@ builder.Services.AddOpenApi(options =>
 });
 ```
 
+### ProblemResponseTransformer
+
+The `TypedResults.Problem` method in ASP.NET Core returns a problem details response, but this method does not
+implement `IEndpointMetadataProvider`, so the response is not documented in the OpenAPI document. This is because the status code is not known at compile time. But this situation can be described in OpenAPI 3.0.x using the `4XX` response code. The [ProblemResponseTransformer](./TransformerGallery/Transformers/ProblemResponseTransformer.cs) transformer adds a `4XX` response for the problem details response to the OpenAPI document.
+
+#### Usage
+
+Copy the ProblemResponseTransformer.cs file to your project and then configure the transformer in the `configureOptions`
+delegate of the `AddOpenApi` extension method as shown below:
+
+```csharp
+builder.Services.AddOpenApi(options =>
+{
+    options.AddProblemResponseTransformer();
+});
+```
+
 ### SecuritySchemeTransformer
 
 Currently ASP.NET does not collect information about the security schemes used in the application. The

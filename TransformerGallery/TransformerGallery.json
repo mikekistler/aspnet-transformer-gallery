@@ -28,6 +28,9 @@
                 }
               }
             }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
           }
         }
       }
@@ -41,6 +44,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
           }
         },
         "security": [
@@ -75,6 +81,9 @@
                 }
               }
             }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
           }
         }
       }
@@ -104,6 +113,9 @@
                 }
               }
             }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
           }
         }
       }
@@ -133,6 +145,42 @@
                 }
               }
             }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/problems": {
+      "get": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
           }
         }
       }
@@ -259,6 +307,18 @@
           "temperatureF": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Problem": {
+        "description": "A problem occurred",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
           }
         }
       }
