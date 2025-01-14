@@ -17,6 +17,7 @@ builder.Services.AddOpenApi(options =>
     options.AddNullableTransformer();
     options.AddSecuritySchemeTransformer();
     options.AddProblemResponseTransformer();
+    options.AddDocumentTransformer<CanonicalDocumentTransformer>();
 });
 
 builder.Services.AddAuthorization();

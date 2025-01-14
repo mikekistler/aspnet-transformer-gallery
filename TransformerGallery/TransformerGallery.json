@@ -9,22 +9,28 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/weatherforecast": {
-      "get": {
+    "/command": {
+      "post": {
         "tags": [
           "TransformerGallery"
         ],
-        "operationId": "GetWeatherForecast",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Command"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
+                  "$ref": "#/components/schemas/Command"
                 }
               }
             }
@@ -33,27 +39,6 @@
             "$ref": "#/components/responses/Problem"
           }
         }
-      }
-    },
-    "/snow-day": {
-      "post": {
-        "tags": [
-          "TransformerGallery"
-        ],
-        "operationId": "SnowDay",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "4XX": {
-            "$ref": "#/components/responses/Problem"
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
       }
     },
     "/nullable-props": {
@@ -88,28 +73,29 @@
         }
       }
     },
-    "/command": {
-      "post": {
+    "/problems": {
+      "get": {
         "tags": [
           "TransformerGallery"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Command"
-              }
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Command"
+                  "type": "string"
                 }
               }
             }
@@ -118,6 +104,27 @@
             "$ref": "#/components/responses/Problem"
           }
         }
+      }
+    },
+    "/snow-day": {
+      "post": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "operationId": "SnowDay",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/tag": {
@@ -152,29 +159,22 @@
         }
       }
     },
-    "/problems": {
+    "/weatherforecast": {
       "get": {
         "tags": [
           "TransformerGallery"
         ],
-        "parameters": [
-          {
-            "name": "status",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "operationId": "GetWeatherForecast",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
                 }
               }
             }
