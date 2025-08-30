@@ -11,6 +11,25 @@ public static class ProblemResponseTransformer
         {
             document.Components ??= new();
             document.Components.Responses ??= new Dictionary<string, OpenApiResponse>();
+
+            // Define the ProblemDetails schema based on RFC7807 explicitly
+            document.Components.Schemas ??= new Dictionary<string, OpenApiSchema>();
+            if (!document.Components.Schemas.ContainsKey("ProblemDetails"))
+            {
+                document.Components.Schemas["ProblemDetails"] = new OpenApiSchema
+                {
+                    Type = "object",
+                    Properties = new Dictionary<string, OpenApiSchema>
+                    {
+                        { "type", new OpenApiSchema { Type = "string", Format = "uri" } },
+                        { "title", new OpenApiSchema { Type = "string" } },
+                        { "status", new OpenApiSchema { Type = "integer", Format = "int32" } },
+                        { "detail", new OpenApiSchema { Type = "string" } },
+                    },
+                    AdditionalPropertiesAllowed = true
+                };
+            }
+
             document.Components.Responses["Problem"] = new()
             {
                 Description = "A problem occurred",
@@ -23,7 +42,7 @@ public static class ProblemResponseTransformer
                             Reference = new()
                             {
                                 Type = ReferenceType.Schema,
-                                Id = "Problem"
+                                Id = "ProblemDetails"
                             }
                         }
                     }
