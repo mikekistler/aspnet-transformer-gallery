@@ -14,9 +14,9 @@ public static class ProblemResponseTransformer
             document.Components.Responses["Problem"] = new OpenApiResponse()
             {
                 Description = "A problem occurred",
-                Content = new Dictionary<string, OpenApiMediaType>()
+                Content = new Dictionary<string, IOpenApiMediaType>()
                 {
-                    ["application/problem+json"] = new()
+                    ["application/problem+json"] = new OpenApiMediaType()
                     {
                         Schema = new OpenApiSchemaReference("Problem", document)
                     }

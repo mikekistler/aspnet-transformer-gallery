@@ -38,7 +38,7 @@ internal class CanonicalDocumentTransformer : IOpenApiDocumentTransformer
         var comparer = new HttpMethodComparer();
         foreach (var path in document.Paths)
         {
-            if (path.Value is OpenApiPathItem pathItem)
+            if (path.Value is OpenApiPathItem pathItem && pathItem.Operations is not null)
             {
                 var sortedOperations = pathItem.Operations.OrderBy(o => o.Key, comparer).ToDictionary(o => o.Key, o => o.Value);
                 pathItem.Operations.Clear();
