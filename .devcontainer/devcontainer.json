@@ -1,13 +1,13 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
-	"name": "C# (.NET) .NET 10 GA",
-	"image": "mcr.microsoft.com/devcontainers/dotnet:2-10.0"
+	"name": "C# (.NET) .NET 11 Preview 2",
+	"build": {
+		"dockerfile": "Dockerfile"
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	, "features": {
-        "ghcr.io/devcontainers/features/node:1": {}
-	}
+	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [5000, 5001],
