@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 // OpenAPI Document Transformer to add a contact to the Info object
 internal class InfoContactTransformer : IOpenApiDocumentTransformer

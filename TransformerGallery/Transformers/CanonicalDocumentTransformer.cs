@@ -1,28 +1,26 @@
+using System.Net.Http;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 // OpenAPI Document Transformer to convert the document to a canonical form
 internal class CanonicalDocumentTransformer : IOpenApiDocumentTransformer
 {
-        private class OperationTypeComparer : IComparer<OperationType>
+    private class HttpMethodComparer : IComparer<HttpMethod>
     {
-        private static readonly List<OperationType> Order = new()
-        {
-            OperationType.Get,
-            OperationType.Post,
-            OperationType.Put,
-            OperationType.Patch,
-            OperationType.Delete,
-            OperationType.Head,
-            OperationType.Options
-        };
+        private static readonly List<HttpMethod> Order =
+        [
+            HttpMethod.Get,
+            HttpMethod.Post,
+            HttpMethod.Put,
+            HttpMethod.Patch,
+            HttpMethod.Delete,
+            HttpMethod.Head,
+            HttpMethod.Options
+        ];
 
-        private string foo = OperationType.Get.GetDisplayName();
-
-        public int Compare(OperationType x, OperationType y)
+        public int Compare(HttpMethod? x, HttpMethod? y)
         {
-            return Order.IndexOf(x).CompareTo(Order.IndexOf(y));
+            return Order.IndexOf(x!).CompareTo(Order.IndexOf(y!));
         }
     }
 
@@ -37,21 +35,24 @@ internal class CanonicalDocumentTransformer : IOpenApiDocumentTransformer
         }
 
         // Sort the operations of each path by type in this order: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
-        var comparer = new OperationTypeComparer();
+        var comparer = new HttpMethodComparer();
         foreach (var path in document.Paths)
         {
-            var sortedOperations = path.Value.Operations.OrderBy(o => o.Key, comparer).ToDictionary(o => o.Key, o => o.Value);
-            path.Value.Operations.Clear();
-            foreach (var operation in sortedOperations)
+            if (path.Value is OpenApiPathItem pathItem)
             {
-                path.Value.AddOperation(operation.Key, operation.Value);
+                var sortedOperations = pathItem.Operations.OrderBy(o => o.Key, comparer).ToDictionary(o => o.Key, o => o.Value);
+                pathItem.Operations.Clear();
+                foreach (var operation in sortedOperations)
+                {
+                    pathItem.AddOperation(operation.Key, operation.Value);
+                }
             }
         }
 
         // Sort the elements of the tags field by name
         if (document.Tags != null)
         {
-            document.Tags = document.Tags.OrderBy(t => t.Name).ToList();
+            document.Tags = new SortedSet<OpenApiTag>(document.Tags, Comparer<OpenApiTag>.Create((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal)));
         }
 
         return Task.CompletedTask;

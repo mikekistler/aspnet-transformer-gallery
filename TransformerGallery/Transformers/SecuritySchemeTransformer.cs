@@ -1,8 +1,7 @@
-
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 
 public static class SecuritySchemeTransformer
 {
@@ -18,15 +17,11 @@ public static class SecuritySchemeTransformer
             Name = JwtBearerDefaults.AuthenticationScheme,
             Scheme = JwtBearerDefaults.AuthenticationScheme,
             BearerFormat = "JWT",
-            Reference = new()
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = JwtBearerDefaults.AuthenticationScheme
-            }
         };
         options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
             document.Components ??= new();
+            document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
             document.Components.SecuritySchemes.Add(JwtBearerDefaults.AuthenticationScheme, scheme);
             return Task.CompletedTask;
         });
@@ -34,7 +29,8 @@ public static class SecuritySchemeTransformer
         {
             if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>().Any())
             {
-                operation.Security = [new() { [scheme] = [] }];
+                var schemeRef = new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, context.Document);
+                operation.Security = [new() { [schemeRef] = [] }];
             }
             return Task.CompletedTask;
         });

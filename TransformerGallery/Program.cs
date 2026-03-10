@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer(new InfoContactTransformer());
 
-    TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = "number", Format = "decimal" });
+    TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = JsonSchemaType.Number, Format = "decimal" });
     options.AddSchemaTransformer(TypeTransformer.TransformAsync);
     options.AddNullableTransformer();
     options.AddSecuritySchemeTransformer();

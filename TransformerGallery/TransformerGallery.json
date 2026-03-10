@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "info": {
     "title": "TransformerGallery | v1",
     "contact": {
@@ -84,7 +84,11 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -219,7 +223,14 @@
             "$ref": "#/components/schemas/Address"
           },
           "workAddress": {
-            "$ref": "#/components/schemas/Address"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ]
           },
           "phoneNumber": {
             "type": "string"
@@ -231,7 +242,14 @@
             "type": "string"
           },
           "altPhoneType": {
-            "$ref": "#/components/schemas/PhoneType"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PhoneType"
+              }
+            ]
           }
         }
       },
@@ -246,11 +264,20 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "namespace": {
-            "$ref": "#/components/schemas/ETagNamespace"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ETagNamespace"
+              }
+            ]
           }
         }
       },
@@ -275,7 +302,14 @@
             "type": "string"
           },
           "namespace": {
-            "$ref": "#/components/schemas/ETagNamespace"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ETagNamespace"
+              }
+            ]
           }
         }
       },
@@ -293,19 +327,30 @@
             "format": "date"
           },
           "temperatureC": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "summary": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "chanceOfPrecip": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": "number",
             "format": "decimal"
           },
           "temperatureF": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }

@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Any;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 
-// This transformer attempts to coalesce nullable and non-nullable schemas by removing the `nullable` property
+// This transformer attempts to coalesce nullable and non-nullable schemas by removing the null type
 // wherever nullability is already implied by the `required` property.
 // It also removes `null` from enum values if present.
 // Finally, it removes the "NullableOf" prefix from schema reference IDs if present, being careful to preserve
@@ -31,18 +32,25 @@ public static class NullableTransformer
             {
                 foreach (var property in schema.Properties)
                 {
-                    if (schema.Required?.Contains(property.Key) != true)
+                    if (property.Value is OpenApiSchema propSchema)
                     {
-                        property.Value.Nullable = false;
-                    }
-                    // Also need to remove `null` from enum values if present
-                    if (property.Value.Enum is not null)
-                    {
-                        property.Value.Enum = property.Value.Enum.Where(e => (e as OpenApiString)!.Value != null).ToList();
-                    }
-                    // And remove default value of null if set
-                    if (property.Value.Default is OpenApiNull) {
-                        property.Value.Default = null;
+                        // Remove the null type for non-required properties
+                        if (schema.Required?.Contains(property.Key) != true)
+                        {
+                            propSchema.Type &= ~JsonSchemaType.Null;
+                        }
+                        // Also need to remove `null` from enum values if present
+                        if (propSchema.Enum is not null)
+                        {
+                            propSchema.Enum = propSchema.Enum
+                                .Where(e => e is not null)
+                                .ToList();
+                        }
+                        // And remove default value of null if set
+                        if (propSchema.Default is null)
+                        {
+                            propSchema.Default = null;
+                        }
                     }
                 }
             }

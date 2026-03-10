@@ -1,5 +1,5 @@
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 
 public static class ProblemResponseTransformer
 {
@@ -10,22 +10,15 @@ public static class ProblemResponseTransformer
         options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
             document.Components ??= new();
-            document.Components.Responses ??= new Dictionary<string, OpenApiResponse>();
-            document.Components.Responses["Problem"] = new()
+            document.Components.Responses ??= new Dictionary<string, IOpenApiResponse>();
+            document.Components.Responses["Problem"] = new OpenApiResponse()
             {
                 Description = "A problem occurred",
                 Content = new Dictionary<string, OpenApiMediaType>()
                 {
                     ["application/problem+json"] = new()
                     {
-                        Schema = new()
-                        {
-                            Reference = new()
-                            {
-                                Type = ReferenceType.Schema,
-                                Id = "Problem"
-                            }
-                        }
+                        Schema = new OpenApiSchemaReference("Problem", document)
                     }
                 }
             };
@@ -34,14 +27,7 @@ public static class ProblemResponseTransformer
         options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
             operation.Responses ??= new();
-            operation.Responses["4XX"] = new()
-            {
-                Reference = new()
-                {
-                    Type = ReferenceType.Response,
-                    Id = "Problem"
-                }
-            };
+            operation.Responses["4XX"] = new OpenApiResponseReference("Problem", context.Document);
             return Task.CompletedTask;
         });
         return options;
