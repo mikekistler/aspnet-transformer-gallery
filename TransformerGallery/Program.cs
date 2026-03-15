@@ -90,6 +90,14 @@ app.MapPost("/tag", (Tag body) =>
     return TypedResults.Ok(body);
 });
 
+app.MapGet("/public-info", () =>
+{
+    return Results.Ok("This is public information.");
+})
+.WithName("GetPublicInfo")
+.RequireAuthorization()
+.AllowAnonymous();
+
 app.MapGet("/problems",
     Results<Ok<string>, ProblemHttpResult> (int status) =>
 {

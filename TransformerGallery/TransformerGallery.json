@@ -110,6 +110,22 @@
         }
       }
     },
+    "/public-info": {
+      "get": {
+        "tags": [
+          "TransformerGallery"
+        ],
+        "operationId": "GetPublicInfo",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
     "/snow-day": {
       "post": {
         "tags": [

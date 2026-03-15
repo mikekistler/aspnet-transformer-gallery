@@ -27,7 +27,11 @@ public static class SecuritySchemeTransformer
         });
         options.AddOperationTransformer((operation, context, cancellationToken) =>
         {
-            if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>().Any())
+            if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAllowAnonymous>().Any())
+            {
+                operation.Security = null;
+            }
+            else if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>().Any())
             {
                 var schemeRef = new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, context.Document);
                 operation.Security = [new() { [schemeRef] = [] }];
