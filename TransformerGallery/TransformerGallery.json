@@ -302,14 +302,16 @@
           "ContentWarning",
           "Genre",
           "Franchise"
-        ]
+        ],
+        "type": "string"
       },
       "PhoneType": {
         "enum": [
           "Home",
           "Work",
           "Mobile"
-        ]
+        ],
+        "type": "string"
       },
       "Tag": {
         "type": "object",

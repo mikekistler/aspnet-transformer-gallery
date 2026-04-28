@@ -65,6 +65,25 @@ builder.Services.AddOpenApi(options =>
 });
 ```
 
+## EnumTypeTransformer
+
+ASP.NET may generate enum schemas without a `type` keyword. This is technically correct but
+some tools that consume the OpenAPI document may expect a `type` keyword to be present on enum schemas.
+The [EnumTypeTransformer](./TransformerGallery/Transformers/EnumTypeTransformer.cs) transformer adds
+`type: string` to enum schemas when all of the enum values are strings.
+
+### Usage
+
+Copy the EnumTypeTransformer.cs file to your project and then configure the transformer in the `configureOptions`
+delegate of the `AddOpenApi` extension method as shown below:
+
+```csharp
+builder.Services.AddOpenApi(options =>
+{
+    options.AddEnumTypeTransformer();
+});
+```
+
 ## ProblemResponseTransformer
 
 The `TypedResults.Problem` method in ASP.NET Core returns a problem details response, but this method does not

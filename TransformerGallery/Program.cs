@@ -15,6 +15,7 @@ builder.Services.AddOpenApi(options =>
     TypeTransformer.MapType<decimal>(new OpenApiSchema { Type = JsonSchemaType.Number, Format = "decimal" });
     options.AddSchemaTransformer(TypeTransformer.TransformAsync);
     options.AddNullableTransformer();
+    options.AddEnumTypeTransformer();
     options.AddSecuritySchemeTransformer();
     options.AddProblemResponseTransformer();
     options.AddDocumentTransformer<CanonicalDocumentTransformer>();
